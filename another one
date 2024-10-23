@@ -1,0 +1,67 @@
+# Programmers: Harry Li, Jose
+# Course:  CS151 sec 06
+# Due Date: 10/15/2024
+# Lab Assignment: ATM Program
+# Problem Statement: Write a program for an ATM
+# Data In: User inputs the letter to perform actions
+# Data Out: The program outputs the balance of the user
+
+# Output a description of the program
+print('This is an ATM that includes deposit, withdraw, displaying balance, and exit.')
+print('The program uses "D" for deposit, "W" for withdraw, "V" for view balance, and "E" for exit.')
+
+# Initial balance
+balance = 1000.00 
+
+# Function for deposit
+def deposit_func(balance):
+    deposit = float(input('Enter the amount you want to deposit: '))
+    while deposit < 0:
+        deposit = float(input('Enter a valid amount: '))
+    balance += deposit
+    return balance
+
+# Function for withdrawal
+def withdraw_func(balance):
+    withdraw = float(input('Enter the amount you want to withdraw: '))
+    while withdraw < 0 or withdraw > balance:
+        if withdraw > balance:
+            print("Insufficient balance.")
+        withdraw = float(input('Enter a valid amount: '))
+    balance -= withdraw
+    
+    # Check for debt
+    if balance < 0:
+        interest_fee = input('You are in debt, and a 5% interest fee will be charged. Do you still want to proceed? (yes/no): ').lower()
+        while interest_fee not in ['yes', 'no']:
+            interest_fee = input('Please enter yes or no: ').lower()
+        if interest_fee == 'yes':
+            balance *= 1.05
+        else:
+            balance += withdraw  # undo withdrawal if user opts out of debt
+    return balance
+
+# Function to view balance
+def view_balance(balance):
+    print(f'Your current balance is: ${balance:.2f}')
+
+# Main program logic
+def atm_program():
+    global balance  # Declare global variable to modify balance within functions
+    while True:
+        action = input('Please enter one of the following D (deposit), W (withdraw), V (view balance), or E (exit): ').lower()
+        
+        if action == 'd':
+            balance = deposit_func(balance)
+        elif action == 'w':
+            balance = withdraw_func(balance)
+        elif action == 'v':
+            view_balance(balance)
+        elif action == 'e':
+            print('Thank you for using our ATM!')
+            break
+        else:
+            print('Invalid input, please try again.')
+
+# Run the program
+atm_program()
