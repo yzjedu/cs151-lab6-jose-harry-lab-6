@@ -16,11 +16,12 @@ import math
 balance = 1000.00 
 
 # Create function for deposit
-def deposit_func():
-    deposit = int(input('Enter the amount you want to deposit:'))
+def deposit_func(balance):
+    deposit = float(input('Enter the amount you want to deposit: '))
     while deposit < 0:
-        deposit = int(input('Enter a valid amount:'))
+        deposit = float(input('Enter a valid amount: '))
     balance += deposit
+    return balance
     
 # Create function for asking input
 def action_func():
@@ -29,26 +30,30 @@ def action_func():
         action = str(input('PLEASE ENTER ONE OF THE FOLLOWING D, W, V, or E:'))
 
 # Create function for withdraw
-def withdraw_func():
-    withdraw = int(input('Enter a negative number that you want to withdraw:'))
-    while withdraw > 0:
-        withdraw = int(input('Enter a valid amount:'))
-    balance += withdraw
+def withdraw_func(balance):
+    withdraw = float(input('Enter the amount you want to withdraw: '))
+    while withdraw < 0 or withdraw > balance:
+        if withdraw > balance:
+            print("Insufficient balance.")
+        withdraw = float(input('Enter a valid amount: '))
+    balance -= withdraw
 
 # Create function for checking if going into debt
-def debt_func():
-    if balance < 0:
-        interest_fee = input('Your going to be in debt and a 5% interest fee would be charged, do you still want to proceed:')
-        while interest_fee != 'no' and interest_fee != 'yes':
-            interest_fee = input('Please enter yes or no:')
+def debt_func(balance):
+      if balance < 0:
+        interest_fee = input('You are in debt, and a 5% interest fee will be charged. Do you still want to proceed? (yes/no): ').lower()
+        while interest_fee not in ['yes', 'no']:
+            interest_fee = input('Please enter yes or no: ').lower()
         if interest_fee == 'yes':
             balance *= 1.05
         else:
-            balance += abs(withdraw)
+            balance += withdraw  # undo withdrawal if user opts out of debt
+        return balance
+
 
 # Create function for viewing balance
-def view_balance():
-    print('Your balance is $',balance)
+def view_balance(balance):
+    print(f'Your current balance is: ${balance:.2f}')
 
 # Prompt user to input D, W, V, or E and set it to the lower case form 
 action = input('Please enter one of the following D, W, V, or E:')
@@ -60,38 +65,22 @@ while action != 'd' and action != 'w' and action != 'e' and action != 'v':
 
 # While user enters 'd' give the action to deposit an amount and add to the total balance
 while action == 'd':
-    deposit_func()
-    action = input('Please enter one of the following D, W, V, or E:')
-    while action != 'd' and action != 'w' and action != 'e' and action != 'v':
-        action = str(input('PLEASE ENTER ONE OF THE FOLLOWING D, W, V, or E:'))
-
+    balance = deposit_func(balance)
+    action_func()
+    
+# While user enters 'w' give the action to withdraw an amount and add to the total balance
 while action == 'w':
-    withdraw = int(input('Enter a negative number that you want to withdraw:'))
-    while withdraw > 0:
-        withdraw = int(input('Enter a valid amount:'))
-    balance += withdraw
-    if balance < 0:
-        interest_fee = input('Your going to be in debt and a 5% interest fee would be charged, do you still want to proceed:')
-        while interest_fee != 'no' and interest_fee != 'yes':
-            interest_fee = input('Please enter yes or no:')
-        if interest_fee == 'yes':
-            balance *= 1.05
-        else:
-            balance += abs(withdraw)
-    action = input('Please enter one of the following D, W, V, or E:')
-    while action != 'd' and action != 'w' and action != 'e' and action != 'v':
-        action = str(input('PLEASE ENTER ONE OF THE FOLLOWING D, W, V, or E:'))
-
+    balance = withdraw_func(balance)
+    balance = debt_func()
+    action_func()
+    
 # Output balance when user enters 'v'
 while action == 'v':
-    print('Your balance is $',balance)
-    action = input('Please enter one of the following D, W, V, or E:')
-    while action != 'd' and action != 'w' and action != 'e' and action != 'v':
-        action = str(input('PLEASE ENTER ONE OF THE FOLLOWING D, W, V, or E:'))  
-            
+   view_balance(balance)
+   action_func()
+    
 # If user enters 'E' end program 
 if action == 'e':
     print('Thank you for using our ATM!')
             
             
-    
