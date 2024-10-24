@@ -24,11 +24,13 @@ def deposit_func(balance):
     return balance
     
 # Create function for asking input
-def action_func():
+def action_func(action):
     action = input('Please enter one of the following D, W, V, or E:')
+    action = action.lower()
     while action != 'd' and action != 'w' and action != 'e' and action != 'v':
         action = str(input('PLEASE ENTER ONE OF THE FOLLOWING D, W, V, or E:'))
-
+    return action
+    
 # Create function for withdraw
 def withdraw_func(balance):
     withdraw = float(input('Enter the amount you want to withdraw: '))
@@ -63,21 +65,17 @@ action = action.lower()
 while action != 'd' and action != 'w' and action != 'e' and action != 'v':
     action = str(input('PLEASE ENTER ONE OF THE FOLLOWING D, W, V, or E:'))
 
-# While user enters 'd' give the action to deposit an amount and add to the total balance
-while action == 'd':
-    balance = deposit_func(balance)
-    action_func()
-    
-# While user enters 'w' give the action to withdraw an amount and add to the total balance
-while action == 'w':
-    balance = withdraw_func(balance)
-    balance = debt_func()
-    action_func()
-    
-# Output balance when user enters 'v'
-while action == 'v':
-   view_balance(balance)
-   action_func()
+while action != 'e':
+    if action == 'd':
+        balance = deposit_func(balance)
+        action = action_func(action)
+    if action == 'w':
+        balance = withdraw_func(balance)
+        balance = debt_func()
+        action = action_func(action)
+    if action == 'v':
+        view_balance(balance)
+        action = action_func(action)
     
 # If user enters 'E' end program 
 if action == 'e':
